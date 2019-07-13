@@ -1,0 +1,18 @@
+<form action='/api/images' method="post" enctype="multipart/form-data">  
+    <input type='file' name='image' id="file" required/>
+    <img src="" alt="" id="img" width="100px" height="100px">
+    <input type="submit" value="add">
+</form>
+
+<script>
+    var file = document.getElementById("file");
+    var img = document.getElementById("img");
+
+    file.addEventListener('change', test);
+
+    function test() {
+        console.log(file.files[0]);
+        img.src = window.URL.createObjectURL(file.files[0]);
+    }
+
+</script>
