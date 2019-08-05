@@ -1,7 +1,6 @@
 <script>
     export let user = 'null';
     export let postericon = '../images/userProfile/profile1.jpg';
-    export let title = 'title';
     export let text = 'this is an exampel';
     export let postSrc = '../images/posts/bild1.jpg';
     export let likes = 0;
@@ -12,9 +11,7 @@
     export let color = "gray";
 
 
-    var likeButton = () => {
-        liked = !liked;
-    }
+    const likeButton = () => liked = !liked;
 
 </script>
 
