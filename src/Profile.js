@@ -16,23 +16,32 @@ export var profile = {
 export function Loggin(event, _callback) {
   var e = event.detail;
 
-  jQuery.ajax({
-    type: 'POST',
-    url: "/Loggin",
-    contentType: "application/json",
-    data: JSON.stringify({Event: e}),
-    headers: {
-      Authorization: "..."
-    }
-  }).done((response) => {
-    _callback(response);
-  }).fail((data) => {
-    if(data.responseText != '') console.log("error:   " + data.responseText);
-    else console.log('error:   Oops! An error occured and your message could not be sent.');
-  }); 
+  let h = new Headers();
+  h.append('Accept', 'application/json');
+
+  let fd = new FormData();
+  fd.append('Username', e.Username);
+  fd.append('Password', e.Password);
+
+  let req = new Request('http://localhost/Loggin', {
+    method: 'POST',
+    headers: h,
+    mode: 'no-cors',
+    body: fd
+  })
+
+  fetch(req)
+        .then( (res) => {
+          return res.json()
+        })
+        .then( (res) => {
+          _callback(res);
+        })
+        .catch( (err) => {
+          console.log('ERROR:', err.message);
+        }); 
+
 }
-
-
 
 
 /*
@@ -42,18 +51,70 @@ export function Loggin(event, _callback) {
 export function CreateNewAcount(event, _callback) {
     var e = event.detail;
 
-    jQuery.ajax({
-      type: 'POST',
-      url: "/CreateAcount",
-      contentType: "application/json",
-      data: JSON.stringify({Event: e}),
-      headers: {
-          Authorization: "..."
-      }
-    }).done(function(response) {
-      _callback(response)
-    }).fail(function(data) {
-        if(data.responseText != '') console.log("error:   " + data.responseText);
-        else console.log('error:   Oops! An error occured and your message could not be sent.');
+    console.table(e);
+
+    let h = new Headers();
+    h.append('Accept', 'application/json');
+
+    let fd = new FormData();
+    fd.append('Username', e.Username);
+    fd.append('Name', e.Name);
+    fd.append('Email', e.Email);
+    fd.append('Password', e.Password);
+
+    let req = new Request('http://localhost/CreateAcount', {
+      method: 'POST',
+      headers: h,
+      mode: 'no-cors',
+      body: fd
     });
+
+    fetch(req)
+          .then( (res) => {
+            return res.json();
+          })
+          .then( (res) => {
+            _callback(res);
+          })
+          .catch( (err) => {
+            console.log('ERROR:', err.message);
+          });
+           
   }
+
+
+/*
+  uppload a profile image
+*/
+export function Uppload(file, _callback) {
+
+  let h = new Headers();
+  //h.append('Accept', 'application/json');
+
+  let fd = new FormData();
+
+  fd.append('profile', window.localStorage.getItem('loggedin'));
+
+  console.log('file ::: ', file);
+  fd.append('icone', file, 'icone.jpg');
+
+  let req = new Request('/ImageUppload', {
+    method: 'POST',
+    headers: {},
+    mode: 'no-cors',
+    body: fd
+  })
+
+  fetch(req)
+        .then( (res) => {
+          return res.json();
+        })
+        .then( (res) => {
+          console.log("anser");
+          _callback(res);
+        })
+        .catch( (err) => {
+          console.log('ERROR:', err.message);
+        });
+
+}

@@ -14,16 +14,17 @@
                 Username: username,
                 Name: name,
                 Email: email,
-                Password: password1
+                Password: password1,
             });
         }
     }
 
-    export var username = "";
-    export var name = "";
-    export var email = "";
-    export var password1 = "";
-    export var password2 = "";
+    var username = "";
+    var name = "";
+    var email = "";
+    var password1 = "";
+    var password2 = "";
+    var profileImage = [new Blob()];
 
     let Class = "";
 
@@ -44,6 +45,7 @@
     input {
         border: 1px solid gray;
         background-color: rgb(66, 66, 66);
+        width: 180px;
     }
 
     .error {

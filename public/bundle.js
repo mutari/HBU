@@ -67,6 +67,9 @@ var app = (function () {
         if (text.data !== data)
             text.data = data;
     }
+    function set_style(node, key, value) {
+        node.style.setProperty(key, value);
+    }
     function toggle_class(element, name, toggle) {
         element.classList[toggle ? 'add' : 'remove'](name);
     }
@@ -588,30 +591,54 @@ var app = (function () {
     const file_1 = "src/PopUpp/uppload.svelte";
 
     function create_fragment$1(ctx) {
-    	var div1, label, t0, input, t1, div0, img, dispose;
+    	var form, img, t0, div, input0, t1, input1, t2, input2, dispose;
 
     	return {
     		c: function create() {
-    			div1 = element("div");
-    			label = element("label");
-    			t0 = text("chose a file:\n        ");
-    			input = element("input");
-    			t1 = space();
-    			div0 = element("div");
+    			form = element("form");
     			img = element("img");
-    			attr(input, "type", "file");
-    			add_location(input, file_1, 20, 8, 357);
-    			add_location(label, file_1, 18, 4, 319);
+    			t0 = space();
+    			div = element("div");
+    			input0 = element("input");
+    			t1 = space();
+    			input1 = element("input");
+    			t2 = space();
+    			input2 = element("input");
     			attr(img, "src", ctx.file);
     			attr(img, "alt", "");
-    			attr(img, "width", "100px");
-    			attr(img, "height", "100px");
-    			add_location(img, file_1, 24, 8, 444);
-    			attr(div0, "class", "display");
-    			add_location(div0, file_1, 23, 4, 414);
-    			attr(div1, "class", "uppload svelte-2rg2q4");
-    			add_location(div1, file_1, 17, 0, 293);
-    			dispose = listen(input, "input", ctx.input_input_handler);
+    			set_style(img, "cursor", "pointer");
+    			attr(img, "class", "svelte-lzykve");
+    			add_location(img, file_1, 55, 4, 1056);
+    			attr(input0, "id", "upfile");
+    			attr(input0, "name", "profileImage");
+    			attr(input0, "type", "file");
+    			attr(input0, "class", "svelte-lzykve");
+    			add_location(input0, file_1, 57, 57, 1237);
+    			set_style(div, "height", "0px");
+    			set_style(div, "width", "0px");
+    			set_style(div, "overflow", "hidden");
+    			attr(div, "class", "svelte-lzykve");
+    			add_location(div, file_1, 57, 4, 1184);
+    			attr(input1, "type", "textarea");
+    			attr(input1, "placeholder", "Write somthing");
+    			attr(input1, "class", "svelte-lzykve");
+    			add_location(input1, file_1, 59, 4, 1434);
+    			attr(input2, "type", "button");
+    			input2.value = "uppload";
+    			attr(input2, "class", "svelte-lzykve");
+    			add_location(input2, file_1, 60, 4, 1491);
+    			attr(form, "id", "formUpload");
+    			attr(form, "action", "/api/images");
+    			attr(form, "method", "POST");
+    			attr(form, "enctype", "multipart/form-data");
+    			attr(form, "class", "svelte-lzykve");
+    			add_location(form, file_1, 54, 0, 964);
+
+    			dispose = [
+    				listen(img, "click", getFile2),
+    				listen(input0, "input", ctx.input0_input_handler),
+    				listen(input2, "click", ctx.uppload)
+    			];
     		},
 
     		l: function claim(nodes) {
@@ -619,13 +646,15 @@ var app = (function () {
     		},
 
     		m: function mount(target, anchor) {
-    			insert(target, div1, anchor);
-    			append(div1, label);
-    			append(label, t0);
-    			append(label, input);
-    			append(div1, t1);
-    			append(div1, div0);
-    			append(div0, img);
+    			insert(target, form, anchor);
+    			append(form, img);
+    			append(form, t0);
+    			append(form, div);
+    			append(div, input0);
+    			append(form, t1);
+    			append(form, input1);
+    			append(form, t2);
+    			append(form, input2);
     		},
 
     		p: function update(changed, ctx) {
@@ -639,22 +668,32 @@ var app = (function () {
 
     		d: function destroy(detaching) {
     			if (detaching) {
-    				detach(div1);
+    				detach(form);
     			}
 
-    			dispose();
+    			run_all(dispose);
     		}
     	};
     }
 
+    function getFile2(){
+        document.getElementById("upfile").click();
+    }
+
     function instance$1($$self, $$props, $$invalidate) {
-    	let files = [new Blob()];
-        let file; // the image file data 
+    	const dispatch = createEventDispatcher();
+
+        var uppload = () => dispatch('uppload', {
+            file: files[0]
+        });
+
+        var files = [new Blob()];
+        let file;
 
         let reader = new FileReader();
         reader.onload = (e) => { $$invalidate('file', file = e.target.result); }; $$invalidate('reader', reader);
 
-    	function input_input_handler() {
+    	function input0_input_handler() {
     		files = this.files;
     		$$invalidate('files', files);
     	}
@@ -663,7 +702,12 @@ var app = (function () {
     		if ($$dirty.reader || $$dirty.files) { reader.readAsDataURL(files[0]); }
     	};
 
-    	return { files, file, input_input_handler };
+    	return {
+    		uppload,
+    		files,
+    		file,
+    		input0_input_handler
+    	};
     }
 
     class Uppload extends SvelteComponentDev {
@@ -677,52 +721,132 @@ var app = (function () {
 
     const file$1 = "src/Header.svelte";
 
-    // (44:4) {#if loggedIn}
+    // (78:4) {#if loggedIn}
     function create_if_block_1(ctx) {
-    	var div, img, t0, p, t1;
+    	var div1, div0, t0, p, t1_value = ctx.user.Username, t1;
+
+    	function select_block_type(ctx) {
+    		if (ctx.user.Usericon != null) return create_if_block_2;
+    		return create_else_block_1;
+    	}
+
+    	var current_block_type = select_block_type(ctx);
+    	var if_block = current_block_type(ctx);
 
     	return {
     		c: function create() {
-    			div = element("div");
-    			img = element("img");
+    			div1 = element("div");
+    			div0 = element("div");
+    			if_block.c();
     			t0 = space();
     			p = element("p");
-    			t1 = text(ctx.name);
-    			attr(img, "src", ctx.image);
-    			attr(img, "alt", "");
-    			add_location(img, file$1, 45, 12, 867);
-    			add_location(p, file$1, 46, 12, 906);
-    			attr(div, "class", "profileDisplay svelte-5qfn5n");
-    			add_location(div, file$1, 44, 8, 826);
+    			t1 = text(t1_value);
+    			attr(div0, "class", "image svelte-dwkjux");
+    			add_location(div0, file$1, 79, 12, 1570);
+    			attr(p, "class", "svelte-dwkjux");
+    			add_location(p, file$1, 86, 12, 1832);
+    			attr(div1, "class", "profileDisplay svelte-dwkjux");
+    			add_location(div1, file$1, 78, 8, 1529);
     		},
 
     		m: function mount(target, anchor) {
-    			insert(target, div, anchor);
-    			append(div, img);
-    			append(div, t0);
-    			append(div, p);
+    			insert(target, div1, anchor);
+    			append(div1, div0);
+    			if_block.m(div0, null);
+    			append(div1, t0);
+    			append(div1, p);
     			append(p, t1);
     		},
 
     		p: function update(changed, ctx) {
-    			if (changed.image) {
-    				attr(img, "src", ctx.image);
+    			if (current_block_type === (current_block_type = select_block_type(ctx)) && if_block) {
+    				if_block.p(changed, ctx);
+    			} else {
+    				if_block.d(1);
+    				if_block = current_block_type(ctx);
+    				if (if_block) {
+    					if_block.c();
+    					if_block.m(div0, null);
+    				}
     			}
 
-    			if (changed.name) {
-    				set_data(t1, ctx.name);
+    			if ((changed.user) && t1_value !== (t1_value = ctx.user.Username)) {
+    				set_data(t1, t1_value);
     			}
     		},
 
     		d: function destroy(detaching) {
     			if (detaching) {
-    				detach(div);
+    				detach(div1);
+    			}
+
+    			if_block.d();
+    		}
+    	};
+    }
+
+    // (83:16) {:else}
+    function create_else_block_1(ctx) {
+    	var p, dispose;
+
+    	return {
+    		c: function create() {
+    			p = element("p");
+    			p.textContent = "add";
+    			attr(p, "id", "imgtag");
+    			attr(p, "class", "svelte-dwkjux");
+    			add_location(p, file$1, 83, 20, 1734);
+    			dispose = listen(p, "click", ctx.imageEvent);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, p, anchor);
+    		},
+
+    		p: noop,
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(p);
+    			}
+
+    			dispose();
+    		}
+    	};
+    }
+
+    // (81:16) {#if user.Usericon != null}
+    function create_if_block_2(ctx) {
+    	var img, img_src_value;
+
+    	return {
+    		c: function create() {
+    			img = element("img");
+    			attr(img, "src", img_src_value = ctx.user.Usericon);
+    			attr(img, "alt", "");
+    			attr(img, "class", "svelte-dwkjux");
+    			add_location(img, file$1, 81, 20, 1655);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, img, anchor);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if ((changed.user) && img_src_value !== (img_src_value = ctx.user.Usericon)) {
+    				attr(img, "src", img_src_value);
+    			}
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(img);
     			}
     		}
     	};
     }
 
-    // (57:12) {:else}
+    // (97:12) {:else}
     function create_else_block(ctx) {
     	var t;
 
@@ -743,7 +867,7 @@ var app = (function () {
     	};
     }
 
-    // (55:12) {#if !loggedIn}
+    // (95:12) {#if !loggedIn}
     function create_if_block(ctx) {
     	var t;
 
@@ -769,12 +893,12 @@ var app = (function () {
 
     	var if_block0 = (ctx.loggedIn) && create_if_block_1(ctx);
 
-    	function select_block_type(ctx) {
+    	function select_block_type_1(ctx) {
     		if (!ctx.loggedIn) return create_if_block;
     		return create_else_block;
     	}
 
-    	var current_block_type = select_block_type(ctx);
+    	var current_block_type = select_block_type_1(ctx);
     	var if_block1 = current_block_type(ctx);
 
     	return {
@@ -798,20 +922,20 @@ var app = (function () {
     			button2 = element("button");
     			if_block1.c();
     			attr(h1, "class", "title");
-    			add_location(h1, file$1, 41, 4, 767);
-    			attr(button0, "class", "svelte-5qfn5n");
-    			add_location(button0, file$1, 51, 12, 967);
-    			add_location(li0, file$1, 51, 8, 963);
-    			attr(button1, "class", "svelte-5qfn5n");
-    			add_location(button1, file$1, 52, 12, 1035);
-    			add_location(li1, file$1, 52, 8, 1031);
-    			attr(button2, "class", "svelte-5qfn5n");
-    			add_location(button2, file$1, 53, 12, 1101);
-    			add_location(li2, file$1, 53, 8, 1097);
-    			attr(ul, "class", "svelte-5qfn5n");
-    			add_location(ul, file$1, 50, 4, 950);
+    			add_location(h1, file$1, 75, 4, 1474);
+    			attr(button0, "class", "svelte-dwkjux");
+    			add_location(button0, file$1, 91, 12, 1902);
+    			add_location(li0, file$1, 91, 8, 1898);
+    			attr(button1, "class", "svelte-dwkjux");
+    			add_location(button1, file$1, 92, 12, 1970);
+    			add_location(li1, file$1, 92, 8, 1966);
+    			attr(button2, "class", "svelte-dwkjux");
+    			add_location(button2, file$1, 93, 12, 2036);
+    			add_location(li2, file$1, 93, 8, 2032);
+    			attr(ul, "class", "svelte-dwkjux");
+    			add_location(ul, file$1, 90, 4, 1885);
     			attr(div, "class", "header");
-    			add_location(div, file$1, 39, 0, 741);
+    			add_location(div, file$1, 73, 0, 1448);
 
     			dispose = [
     				listen(button0, "click", ctx.settingsEvent),
@@ -856,7 +980,7 @@ var app = (function () {
     				if_block0 = null;
     			}
 
-    			if (current_block_type !== (current_block_type = select_block_type(ctx))) {
+    			if (current_block_type !== (current_block_type = select_block_type_1(ctx))) {
     				if_block1.d(1);
     				if_block1 = current_block_type(ctx);
     				if (if_block1) {
@@ -886,58 +1010,56 @@ var app = (function () {
 
         var settingsEvent = () => dispatch('openSettings');
         var upploadEvent = () => dispatch('openUppload');
-        var userEvent = () => dispatch('openUser');
+        var userEvent = () => {
+            if(loggedIn) dispatch('loggOut');
+            else dispatch('loggIn');
+        };
+        var imageEvent = () => dispatch('upploadProfileImage');
 
-        var { loggedIn = false, name = "", image = "" } = $$props;
+        var { user } = $$props;
 
-    	const writable_props = ['loggedIn', 'name', 'image'];
+        var loggedIn;
+
+    	const writable_props = ['user'];
     	Object.keys($$props).forEach(key => {
     		if (!writable_props.includes(key) && !key.startsWith('$$')) console.warn(`<Header> was created with unknown prop '${key}'`);
     	});
 
     	$$self.$set = $$props => {
-    		if ('loggedIn' in $$props) $$invalidate('loggedIn', loggedIn = $$props.loggedIn);
-    		if ('name' in $$props) $$invalidate('name', name = $$props.name);
-    		if ('image' in $$props) $$invalidate('image', image = $$props.image);
+    		if ('user' in $$props) $$invalidate('user', user = $$props.user);
+    	};
+
+    	$$self.$$.update = ($$dirty = { user: 1 }) => {
+    		if ($$dirty.user) { $$invalidate('loggedIn', loggedIn = user != null); }
     	};
 
     	return {
     		settingsEvent,
     		upploadEvent,
     		userEvent,
-    		loggedIn,
-    		name,
-    		image
+    		imageEvent,
+    		user,
+    		loggedIn
     	};
     }
 
     class Header extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$2, create_fragment$2, safe_not_equal, ["loggedIn", "name", "image"]);
+    		init(this, options, instance$2, create_fragment$2, safe_not_equal, ["user"]);
+
+    		const { ctx } = this.$$;
+    		const props = options.props || {};
+    		if (ctx.user === undefined && !('user' in props)) {
+    			console.warn("<Header> was created without expected prop 'user'");
+    		}
     	}
 
-    	get loggedIn() {
+    	get user() {
     		throw new Error("<Header>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
 
-    	set loggedIn(value) {
-    		throw new Error("<Header>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	get name() {
-    		throw new Error("<Header>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	set name(value) {
-    		throw new Error("<Header>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	get image() {
-    		throw new Error("<Header>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	set image(value) {
+    	set user(value) {
     		throw new Error("<Header>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
     }
@@ -947,45 +1069,49 @@ var app = (function () {
     const file$2 = "src/PopUpp/Loggin.svelte";
 
     function create_fragment$3(ctx) {
-    	var form, label0, t0, input0, t1, label1, t2, input1, t3, button, t5, p, t6, a, dispose;
+    	var div, h1, t1, label0, t2, input0, t3, label1, t4, input1, t5, button, t7, p, t8, a, dispose;
 
     	return {
     		c: function create() {
-    			form = element("form");
-    			label0 = element("label");
-    			t0 = text("UserName: ");
-    			input0 = element("input");
+    			div = element("div");
+    			h1 = element("h1");
+    			h1.textContent = "Logga in";
     			t1 = space();
-    			label1 = element("label");
-    			t2 = text("Password: ");
-    			input1 = element("input");
+    			label0 = element("label");
+    			t2 = text("UserName: ");
+    			input0 = element("input");
     			t3 = space();
+    			label1 = element("label");
+    			t4 = text("Password: ");
+    			input1 = element("input");
+    			t5 = space();
     			button = element("button");
     			button.textContent = "Logga in";
-    			t5 = space();
+    			t7 = space();
     			p = element("p");
-    			t6 = text("You dont hav an acount? ");
+    			t8 = text("You dont hav an acount? ");
     			a = element("a");
     			a.textContent = "Create a acount";
+    			attr(h1, "class", "svelte-1mjce4s");
+    			add_location(h1, file$2, 52, 4, 838);
     			attr(input0, "type", "text");
-    			attr(input0, "class", "svelte-1brroqz");
-    			add_location(input0, file$2, 41, 21, 689);
-    			attr(label0, "class", "svelte-1brroqz");
-    			add_location(label0, file$2, 41, 4, 672);
+    			attr(input0, "class", "svelte-1mjce4s");
+    			add_location(input0, file$2, 53, 21, 877);
+    			attr(label0, "class", "svelte-1mjce4s");
+    			add_location(label0, file$2, 53, 4, 860);
     			attr(input1, "type", "password");
-    			attr(input1, "class", "svelte-1brroqz");
-    			add_location(input1, file$2, 42, 21, 760);
-    			attr(label1, "class", "svelte-1brroqz");
-    			add_location(label1, file$2, 42, 4, 743);
-    			attr(button, "class", "svelte-1brroqz");
-    			add_location(button, file$2, 43, 4, 818);
-    			attr(a, "class", "svelte-1brroqz");
-    			add_location(a, file$2, 44, 31, 893);
-    			attr(p, "class", "svelte-1brroqz");
-    			add_location(p, file$2, 44, 4, 866);
-    			attr(form, "action", "");
-    			attr(form, "class", "svelte-1brroqz");
-    			add_location(form, file$2, 40, 0, 651);
+    			attr(input1, "class", "svelte-1mjce4s");
+    			add_location(input1, file$2, 54, 21, 948);
+    			attr(label1, "class", "svelte-1mjce4s");
+    			add_location(label1, file$2, 54, 4, 931);
+    			attr(button, "class", "svelte-1mjce4s");
+    			add_location(button, file$2, 55, 4, 1006);
+    			attr(a, "class", "svelte-1mjce4s");
+    			add_location(a, file$2, 56, 31, 1081);
+    			attr(p, "class", "svelte-1mjce4s");
+    			add_location(p, file$2, 56, 4, 1054);
+    			attr(div, "class", "svelte-1mjce4s");
+    			add_location(div, file$2, 51, 0, 828);
 
     			dispose = [
     				listen(input0, "input", ctx.input0_input_handler),
@@ -1000,25 +1126,27 @@ var app = (function () {
     		},
 
     		m: function mount(target, anchor) {
-    			insert(target, form, anchor);
-    			append(form, label0);
-    			append(label0, t0);
+    			insert(target, div, anchor);
+    			append(div, h1);
+    			append(div, t1);
+    			append(div, label0);
+    			append(label0, t2);
     			append(label0, input0);
 
     			input0.value = ctx.username;
 
-    			append(form, t1);
-    			append(form, label1);
-    			append(label1, t2);
+    			append(div, t3);
+    			append(div, label1);
+    			append(label1, t4);
     			append(label1, input1);
 
     			input1.value = ctx.password;
 
-    			append(form, t3);
-    			append(form, button);
-    			append(form, t5);
-    			append(form, p);
-    			append(p, t6);
+    			append(div, t5);
+    			append(div, button);
+    			append(div, t7);
+    			append(div, p);
+    			append(p, t8);
     			append(p, a);
     		},
 
@@ -1032,7 +1160,7 @@ var app = (function () {
 
     		d: function destroy(detaching) {
     			if (detaching) {
-    				detach(form);
+    				detach(div);
     			}
 
     			run_all(dispose);
@@ -1139,37 +1267,37 @@ var app = (function () {
     			t11 = space();
     			button = element("button");
     			button.textContent = "Create acount";
-    			attr(h1, "class", "svelte-1804orh");
-    			add_location(h1, file$3, 72, 4, 1264);
+    			attr(h1, "class", "svelte-1uly4mt");
+    			add_location(h1, file$3, 74, 4, 1289);
     			attr(input0, "type", "text");
-    			attr(input0, "class", "svelte-1804orh");
-    			add_location(input0, file$3, 73, 21, 1314);
-    			attr(label0, "class", "svelte-1804orh");
-    			add_location(label0, file$3, 73, 4, 1297);
+    			attr(input0, "class", "svelte-1uly4mt");
+    			add_location(input0, file$3, 75, 21, 1339);
+    			attr(label0, "class", "svelte-1uly4mt");
+    			add_location(label0, file$3, 75, 4, 1322);
     			attr(input1, "type", "text");
-    			attr(input1, "class", "svelte-1804orh");
-    			add_location(input1, file$3, 74, 17, 1381);
-    			attr(label1, "class", "svelte-1804orh");
-    			add_location(label1, file$3, 74, 4, 1368);
+    			attr(input1, "class", "svelte-1uly4mt");
+    			add_location(input1, file$3, 76, 17, 1406);
+    			attr(label1, "class", "svelte-1uly4mt");
+    			add_location(label1, file$3, 76, 4, 1393);
     			attr(input2, "type", "text");
-    			attr(input2, "class", "svelte-1804orh");
-    			add_location(input2, file$3, 75, 19, 1446);
-    			attr(label2, "class", "svelte-1804orh");
-    			add_location(label2, file$3, 75, 4, 1431);
+    			attr(input2, "class", "svelte-1uly4mt");
+    			add_location(input2, file$3, 77, 19, 1471);
+    			attr(label2, "class", "svelte-1uly4mt");
+    			add_location(label2, file$3, 77, 4, 1456);
     			attr(input3, "type", "password");
-    			attr(input3, "class", "svelte-1804orh");
-    			add_location(input3, file$3, 76, 21, 1514);
-    			attr(label3, "class", "svelte-1804orh");
-    			add_location(label3, file$3, 76, 4, 1497);
+    			attr(input3, "class", "svelte-1uly4mt");
+    			add_location(input3, file$3, 78, 21, 1539);
+    			attr(label3, "class", "svelte-1uly4mt");
+    			add_location(label3, file$3, 78, 4, 1522);
     			attr(input4, "type", "password");
-    			attr(input4, "class", "svelte-1804orh");
-    			add_location(input4, file$3, 77, 21, 1590);
-    			attr(label4, "class", "svelte-1804orh");
-    			add_location(label4, file$3, 77, 4, 1573);
-    			attr(button, "class", "svelte-1804orh");
-    			add_location(button, file$3, 78, 4, 1649);
-    			attr(div, "class", "" + ctx.Class + " svelte-1804orh");
-    			add_location(div, file$3, 71, 0, 1238);
+    			attr(input4, "class", "svelte-1uly4mt");
+    			add_location(input4, file$3, 79, 21, 1615);
+    			attr(label4, "class", "svelte-1uly4mt");
+    			add_location(label4, file$3, 79, 4, 1598);
+    			attr(button, "class", "svelte-1uly4mt");
+    			add_location(button, file$3, 80, 4, 1674);
+    			attr(div, "class", "" + ctx.Class + " svelte-1uly4mt");
+    			add_location(div, file$3, 73, 0, 1263);
 
     			dispose = [
     				listen(input0, "input", ctx.input0_input_handler),
@@ -1235,7 +1363,7 @@ var app = (function () {
     			if (changed.password2) input4.value = ctx.password2;
 
     			if (changed.Class) {
-    				attr(div, "class", "" + ctx.Class + " svelte-1804orh");
+    				attr(div, "class", "" + ctx.Class + " svelte-1uly4mt");
     			}
     		},
 
@@ -1266,19 +1394,19 @@ var app = (function () {
                     Username: username,
                     Name: name,
                     Email: email,
-                    Password: password1
+                    Password: password1,
                 });
             }
         };
 
-        var { username = "", name = "", email = "", password1 = "", password2 = "" } = $$props;
+        var username = "";
+        var name = "";
+        var email = "";
+        var password1 = "";
+        var password2 = "";
+        var profileImage = [new Blob()];
 
         let Class = "";
-
-    	const writable_props = ['username', 'name', 'email', 'password1', 'password2'];
-    	Object.keys($$props).forEach(key => {
-    		if (!writable_props.includes(key) && !key.startsWith('$$')) console.warn(`<NewAcount> was created with unknown prop '${key}'`);
-    	});
 
     	function input0_input_handler() {
     		username = this.value;
@@ -1305,14 +1433,6 @@ var app = (function () {
     		$$invalidate('password2', password2);
     	}
 
-    	$$self.$set = $$props => {
-    		if ('username' in $$props) $$invalidate('username', username = $$props.username);
-    		if ('name' in $$props) $$invalidate('name', name = $$props.name);
-    		if ('email' in $$props) $$invalidate('email', email = $$props.email);
-    		if ('password1' in $$props) $$invalidate('password1', password1 = $$props.password1);
-    		if ('password2' in $$props) $$invalidate('password2', password2 = $$props.password2);
-    	};
-
     	return {
     		submit,
     		username,
@@ -1332,47 +1452,139 @@ var app = (function () {
     class NewAcount extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$4, create_fragment$4, safe_not_equal, ["username", "name", "email", "password1", "password2"]);
+    		init(this, options, instance$4, create_fragment$4, safe_not_equal, []);
+    	}
+    }
+
+    /* src/PopUpp/UpploadProfileImage.svelte generated by Svelte v3.6.2 */
+
+    const file_1$1 = "src/PopUpp/UpploadProfileImage.svelte";
+
+    function create_fragment$5(ctx) {
+    	var form, img, t0, div0, t2, div1, input0, t3, input1, dispose;
+
+    	return {
+    		c: function create() {
+    			form = element("form");
+    			img = element("img");
+    			t0 = space();
+    			div0 = element("div");
+    			div0.textContent = "Choose a file";
+    			t2 = space();
+    			div1 = element("div");
+    			input0 = element("input");
+    			t3 = space();
+    			input1 = element("input");
+    			attr(img, "src", ctx.file);
+    			attr(img, "alt", "");
+    			attr(img, "class", "svelte-1wyg38x");
+    			add_location(img, file_1$1, 67, 8, 1462);
+    			attr(div0, "id", "yourBtn");
+    			set_style(div0, "height", "50px");
+    			set_style(div0, "width", "100px");
+    			set_style(div0, "border", "1px dashed #BBB");
+    			set_style(div0, "cursor", "pointer");
+    			attr(div0, "class", "svelte-1wyg38x");
+    			add_location(div0, file_1$1, 68, 8, 1494);
+    			attr(input0, "id", "upfile");
+    			attr(input0, "name", "profileImage");
+    			attr(input0, "type", "file");
+    			add_location(input0, file_1$1, 70, 61, 1747);
+    			set_style(div1, "height", "0px");
+    			set_style(div1, "width", "0px");
+    			set_style(div1, "overflow", "hidden");
+    			add_location(div1, file_1$1, 70, 8, 1694);
+    			attr(input1, "type", "button");
+    			input1.value = "uppload";
+    			attr(input1, "class", "svelte-1wyg38x");
+    			add_location(input1, file_1$1, 72, 8, 1952);
+    			attr(form, "id", "formProfile");
+    			attr(form, "action", "/api/images");
+    			attr(form, "method", "POST");
+    			attr(form, "enctype", "multipart/form-data");
+    			attr(form, "class", "svelte-1wyg38x");
+    			add_location(form, file_1$1, 66, 0, 1365);
+
+    			dispose = [
+    				listen(div0, "click", getFile),
+    				listen(input0, "input", ctx.input0_input_handler),
+    				listen(input1, "click", ctx.uppload)
+    			];
+    		},
+
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, form, anchor);
+    			append(form, img);
+    			append(form, t0);
+    			append(form, div0);
+    			append(form, t2);
+    			append(form, div1);
+    			append(div1, input0);
+    			append(form, t3);
+    			append(form, input1);
+    		},
+
+    		p: function update(changed, ctx) {
+    			if (changed.file) {
+    				attr(img, "src", ctx.file);
+    			}
+    		},
+
+    		i: noop,
+    		o: noop,
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(form);
+    			}
+
+    			run_all(dispose);
+    		}
+    	};
+    }
+
+    function getFile(){
+        document.getElementById("upfile").click();
+    }
+
+    function instance$5($$self, $$props, $$invalidate) {
+    	const dispatch = createEventDispatcher();
+
+        var uppload = () => dispatch('uppload', {
+            file: files[0]
+        });
+
+        var files = [new Blob()];
+        let file;
+
+        let reader = new FileReader();
+        reader.onload = (e) => { $$invalidate('file', file = e.target.result); }; $$invalidate('reader', reader);
+
+    	function input0_input_handler() {
+    		files = this.files;
+    		$$invalidate('files', files);
     	}
 
-    	get username() {
-    		throw new Error("<NewAcount>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
+    	$$self.$$.update = ($$dirty = { reader: 1, files: 1 }) => {
+    		if ($$dirty.reader || $$dirty.files) { reader.readAsDataURL(files[0]); }
+    	};
 
-    	set username(value) {
-    		throw new Error("<NewAcount>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
+    	return {
+    		uppload,
+    		files,
+    		file,
+    		input0_input_handler
+    	};
+    }
 
-    	get name() {
-    		throw new Error("<NewAcount>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	set name(value) {
-    		throw new Error("<NewAcount>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	get email() {
-    		throw new Error("<NewAcount>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	set email(value) {
-    		throw new Error("<NewAcount>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	get password1() {
-    		throw new Error("<NewAcount>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	set password1(value) {
-    		throw new Error("<NewAcount>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	get password2() {
-    		throw new Error("<NewAcount>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	set password2(value) {
-    		throw new Error("<NewAcount>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    class UpploadProfileImage extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance$5, create_fragment$5, safe_not_equal, []);
     	}
     }
 
@@ -1389,23 +1601,32 @@ var app = (function () {
     function Loggin$1(event, _callback) {
       var e = event.detail;
 
-      jQuery.ajax({
-        type: 'POST',
-        url: "/Loggin",
-        contentType: "application/json",
-        data: JSON.stringify({Event: e}),
-        headers: {
-          Authorization: "..."
-        }
-      }).done((response) => {
-        _callback(response);
-      }).fail((data) => {
-        if(data.responseText != '') console.log("error:   " + data.responseText);
-        else console.log('error:   Oops! An error occured and your message could not be sent.');
-      }); 
+      let h = new Headers();
+      h.append('Accept', 'application/json');
+
+      let fd = new FormData();
+      fd.append('Username', e.Username);
+      fd.append('Password', e.Password);
+
+      let req = new Request('http://localhost/Loggin', {
+        method: 'POST',
+        headers: h,
+        mode: 'no-cors',
+        body: fd
+      });
+
+      fetch(req)
+            .then( (res) => {
+              return res.json()
+            })
+            .then( (res) => {
+              _callback(res);
+            })
+            .catch( (err) => {
+              console.log('ERROR:', err.message);
+            }); 
+
     }
-
-
 
 
     /*
@@ -1415,28 +1636,131 @@ var app = (function () {
     function CreateNewAcount(event, _callback) {
         var e = event.detail;
 
-        jQuery.ajax({
-          type: 'POST',
-          url: "/CreateAcount",
-          contentType: "application/json",
-          data: JSON.stringify({Event: e}),
-          headers: {
-              Authorization: "..."
-          }
-        }).done(function(response) {
-          _callback(response);
-        }).fail(function(data) {
-            if(data.responseText != '') console.log("error:   " + data.responseText);
-            else console.log('error:   Oops! An error occured and your message could not be sent.');
+        console.table(e);
+
+        let h = new Headers();
+        h.append('Accept', 'application/json');
+
+        let fd = new FormData();
+        fd.append('Username', e.Username);
+        fd.append('Name', e.Name);
+        fd.append('Email', e.Email);
+        fd.append('Password', e.Password);
+
+        let req = new Request('http://localhost/CreateAcount', {
+          method: 'POST',
+          headers: h,
+          mode: 'no-cors',
+          body: fd
         });
+
+        fetch(req)
+              .then( (res) => {
+                return res.json();
+              })
+              .then( (res) => {
+                _callback(res);
+              })
+              .catch( (err) => {
+                console.log('ERROR:', err.message);
+              });
+               
       }
+
+
+    /*
+      uppload a profile image
+    */
+    function Uppload$1(file, _callback) {
+
+      let h = new Headers();
+      //h.append('Accept', 'application/json');
+
+      let fd = new FormData();
+
+      fd.append('profile', window.localStorage.getItem('loggedin'));
+
+      console.log('file ::: ', file);
+      fd.append('icone', file, 'icone.jpg');
+
+      let req = new Request('/ImageUppload', {
+        method: 'POST',
+        headers: {},
+        mode: 'no-cors',
+        body: fd
+      });
+
+      fetch(req)
+            .then( (res) => {
+              return res.json();
+            })
+            .then( (res) => {
+              console.log("anser");
+              _callback(res);
+            })
+            .catch( (err) => {
+              console.log('ERROR:', err.message);
+            });
+
+    }
 
     /* src/App.svelte generated by Svelte v3.6.2 */
 
     const file$4 = "src/App.svelte";
 
-    // (133:0) {#if showUppload}
-    function create_if_block_2(ctx) {
+    // (150:0) {#if showUPI}
+    function create_if_block_3(ctx) {
+    	var div0, t, div1, current;
+
+    	var upploadprofileimage = new UpploadProfileImage({ $$inline: true });
+    	upploadprofileimage.$on("uppload", ctx.uppload_handler);
+
+    	return {
+    		c: function create() {
+    			div0 = element("div");
+    			t = space();
+    			div1 = element("div");
+    			upploadprofileimage.$$.fragment.c();
+    			attr(div0, "class", "mask svelte-1xptwwj");
+    			add_location(div0, file$4, 150, 0, 2954);
+    			attr(div1, "class", "UIP svelte-1xptwwj");
+    			add_location(div1, file$4, 151, 2, 2981);
+    		},
+
+    		m: function mount(target, anchor) {
+    			insert(target, div0, anchor);
+    			insert(target, t, anchor);
+    			insert(target, div1, anchor);
+    			mount_component(upploadprofileimage, div1, null);
+    			current = true;
+    		},
+
+    		i: function intro(local) {
+    			if (current) return;
+    			transition_in(upploadprofileimage.$$.fragment, local);
+
+    			current = true;
+    		},
+
+    		o: function outro(local) {
+    			transition_out(upploadprofileimage.$$.fragment, local);
+    			current = false;
+    		},
+
+    		d: function destroy(detaching) {
+    			if (detaching) {
+    				detach(div0);
+    				detach(t);
+    				detach(div1);
+    			}
+
+    			destroy_component(upploadprofileimage, );
+    		}
+    	};
+    }
+
+    // (169:0) {#if showUppload}
+    function create_if_block_2$1(ctx) {
     	var div, current;
 
     	var uppload_1 = new Uppload({ $$inline: true });
@@ -1445,8 +1769,8 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			uppload_1.$$.fragment.c();
-    			attr(div, "class", "uppload svelte-1tz4vv1");
-    			add_location(div, file$4, 133, 2, 2518);
+    			attr(div, "class", "uppload svelte-1xptwwj");
+    			add_location(div, file$4, 169, 2, 3466);
     		},
 
     		m: function mount(target, anchor) {
@@ -1477,13 +1801,13 @@ var app = (function () {
     	};
     }
 
-    // (139:0) {#if showLoggin}
+    // (175:0) {#if showLoggin}
     function create_if_block_1$1(ctx) {
     	var div0, t, div1, current;
 
     	var loggin = new Loggin({ $$inline: true });
     	loggin.$on("newAcount", ctx.openCAcount);
-    	loggin.$on("submit", ctx.LogginToAcount);
+    	loggin.$on("submit", ctx.submit_handler);
 
     	return {
     		c: function create() {
@@ -1491,10 +1815,10 @@ var app = (function () {
     			t = space();
     			div1 = element("div");
     			loggin.$$.fragment.c();
-    			attr(div0, "class", "mask svelte-1tz4vv1");
-    			add_location(div0, file$4, 139, 2, 2590);
-    			attr(div1, "class", "loggin svelte-1tz4vv1");
-    			add_location(div1, file$4, 140, 2, 2617);
+    			attr(div0, "class", "mask svelte-1xptwwj");
+    			add_location(div0, file$4, 175, 2, 3538);
+    			attr(div1, "class", "loggin svelte-1xptwwj");
+    			add_location(div1, file$4, 176, 2, 3565);
     		},
 
     		m: function mount(target, anchor) {
@@ -1531,12 +1855,12 @@ var app = (function () {
     	};
     }
 
-    // (146:0) {#if showAddAcount}
+    // (191:0) {#if showAddAcount}
     function create_if_block$1(ctx) {
     	var div0, t, div1, current;
 
     	var addacount = new NewAcount({ $$inline: true });
-    	addacount.$on("submit", ctx.submit_handler);
+    	addacount.$on("submit", ctx.submit_handler_1);
 
     	return {
     		c: function create() {
@@ -1544,10 +1868,10 @@ var app = (function () {
     			t = space();
     			div1 = element("div");
     			addacount.$$.fragment.c();
-    			attr(div0, "class", "mask svelte-1tz4vv1");
-    			add_location(div0, file$4, 146, 2, 2744);
-    			attr(div1, "class", "addAcount svelte-1tz4vv1");
-    			add_location(div1, file$4, 147, 2, 2771);
+    			attr(div0, "class", "mask svelte-1xptwwj");
+    			add_location(div0, file$4, 191, 2, 3946);
+    			attr(div1, "class", "addAcount svelte-1xptwwj");
+    			add_location(div1, file$4, 192, 2, 3973);
     		},
 
     		m: function mount(target, anchor) {
@@ -1582,14 +1906,16 @@ var app = (function () {
     	};
     }
 
-    function create_fragment$5(ctx) {
-    	var t0, t1, t2, div3, div0, t3, t4, div2, div1, t5, script, current;
+    function create_fragment$6(ctx) {
+    	var t0, t1, t2, t3, div3, div0, t4, t5, div2, div1, current;
 
-    	var if_block0 = (ctx.showUppload) && create_if_block_2();
+    	var if_block0 = (ctx.showUPI) && create_if_block_3(ctx);
 
-    	var if_block1 = (ctx.showLoggin) && create_if_block_1$1(ctx);
+    	var if_block1 = (ctx.showUppload) && create_if_block_2$1();
 
-    	var if_block2 = (ctx.showAddAcount) && create_if_block$1(ctx);
+    	var if_block2 = (ctx.showLoggin) && create_if_block_1$1(ctx);
+
+    	var if_block3 = (ctx.showAddAcount) && create_if_block$1(ctx);
 
     	var post0 = new Post({ $$inline: true });
 
@@ -1603,10 +1929,15 @@ var app = (function () {
     	}
     	var post1 = new Post({ props: post1_props, $$inline: true });
 
-    	var header = new Header({ $$inline: true });
+    	var header = new Header({
+    		props: { user: ctx.data },
+    		$$inline: true
+    	});
+    	header.$on("upploadProfileImage", ctx.ProfileImageUppload);
     	header.$on("openSettings", ctx.settings);
     	header.$on("openUppload", ctx.uppload);
-    	header.$on("openUser", ctx.user);
+    	header.$on("loggIn", ctx.user);
+    	header.$on("loggOut", ctx.userOut);
 
     	return {
     		c: function create() {
@@ -1616,27 +1947,25 @@ var app = (function () {
     			t1 = space();
     			if (if_block2) if_block2.c();
     			t2 = space();
+    			if (if_block3) if_block3.c();
+    			t3 = space();
     			div3 = element("div");
     			div0 = element("div");
     			post0.$$.fragment.c();
-    			t3 = space();
-    			post1.$$.fragment.c();
     			t4 = space();
+    			post1.$$.fragment.c();
+    			t5 = space();
     			div2 = element("div");
     			div1 = element("div");
     			header.$$.fragment.c();
-    			t5 = space();
-    			script = element("script");
-    			attr(div0, "class", "posts svelte-1tz4vv1");
-    			add_location(div0, file$4, 162, 2, 3056);
-    			attr(div1, "class", "sidbarHead svelte-1tz4vv1");
-    			add_location(div1, file$4, 169, 4, 3149);
-    			attr(div2, "class", "sidbar svelte-1tz4vv1");
-    			add_location(div2, file$4, 167, 2, 3119);
-    			attr(div3, "class", "main svelte-1tz4vv1");
-    			add_location(div3, file$4, 160, 0, 3034);
-    			attr(script, "src", "https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js");
-    			add_location(script, file$4, 178, 2, 3309);
+    			attr(div0, "class", "posts svelte-1xptwwj");
+    			add_location(div0, file$4, 207, 2, 4258);
+    			attr(div1, "class", "sidbarHead svelte-1xptwwj");
+    			add_location(div1, file$4, 214, 4, 4351);
+    			attr(div2, "class", "sidbar svelte-1xptwwj");
+    			add_location(div2, file$4, 212, 2, 4321);
+    			attr(div3, "class", "main svelte-1xptwwj");
+    			add_location(div3, file$4, 205, 0, 4236);
     		},
 
     		l: function claim(nodes) {
@@ -1650,24 +1979,24 @@ var app = (function () {
     			insert(target, t1, anchor);
     			if (if_block2) if_block2.m(target, anchor);
     			insert(target, t2, anchor);
+    			if (if_block3) if_block3.m(target, anchor);
+    			insert(target, t3, anchor);
     			insert(target, div3, anchor);
     			append(div3, div0);
     			mount_component(post0, div0, null);
-    			append(div0, t3);
+    			append(div0, t4);
     			mount_component(post1, div0, null);
-    			append(div3, t4);
+    			append(div3, t5);
     			append(div3, div2);
     			append(div2, div1);
     			mount_component(header, div1, null);
-    			insert(target, t5, anchor);
-    			append(document.head, script);
     			current = true;
     		},
 
     		p: function update(changed, ctx) {
-    			if (ctx.showUppload) {
+    			if (ctx.showUPI) {
     				if (!if_block0) {
-    					if_block0 = create_if_block_2();
+    					if_block0 = create_if_block_3(ctx);
     					if_block0.c();
     					transition_in(if_block0, 1);
     					if_block0.m(t0.parentNode, t0);
@@ -1682,15 +2011,14 @@ var app = (function () {
     				check_outros();
     			}
 
-    			if (ctx.showLoggin) {
-    				if (if_block1) {
-    					if_block1.p(changed, ctx);
-    					transition_in(if_block1, 1);
-    				} else {
-    					if_block1 = create_if_block_1$1(ctx);
+    			if (ctx.showUppload) {
+    				if (!if_block1) {
+    					if_block1 = create_if_block_2$1();
     					if_block1.c();
     					transition_in(if_block1, 1);
     					if_block1.m(t1.parentNode, t1);
+    				} else {
+    									transition_in(if_block1, 1);
     				}
     			} else if (if_block1) {
     				group_outros();
@@ -1700,14 +2028,15 @@ var app = (function () {
     				check_outros();
     			}
 
-    			if (ctx.showAddAcount) {
-    				if (!if_block2) {
-    					if_block2 = create_if_block$1(ctx);
+    			if (ctx.showLoggin) {
+    				if (if_block2) {
+    					if_block2.p(changed, ctx);
+    					transition_in(if_block2, 1);
+    				} else {
+    					if_block2 = create_if_block_1$1(ctx);
     					if_block2.c();
     					transition_in(if_block2, 1);
     					if_block2.m(t2.parentNode, t2);
-    				} else {
-    									transition_in(if_block2, 1);
     				}
     			} else if (if_block2) {
     				group_outros();
@@ -1717,10 +2046,31 @@ var app = (function () {
     				check_outros();
     			}
 
+    			if (ctx.showAddAcount) {
+    				if (!if_block3) {
+    					if_block3 = create_if_block$1(ctx);
+    					if_block3.c();
+    					transition_in(if_block3, 1);
+    					if_block3.m(t3.parentNode, t3);
+    				} else {
+    									transition_in(if_block3, 1);
+    				}
+    			} else if (if_block3) {
+    				group_outros();
+    				transition_out(if_block3, 1, () => {
+    					if_block3 = null;
+    				});
+    				check_outros();
+    			}
+
     			var post1_changes = changed.p ? get_spread_update(post1_spread_levels, [
     				ctx.p
     			]) : {};
     			post1.$set(post1_changes);
+
+    			var header_changes = {};
+    			if (changed.data) header_changes.user = ctx.data;
+    			header.$set(header_changes);
     		},
 
     		i: function intro(local) {
@@ -1728,6 +2078,7 @@ var app = (function () {
     			transition_in(if_block0);
     			transition_in(if_block1);
     			transition_in(if_block2);
+    			transition_in(if_block3);
 
     			transition_in(post0.$$.fragment, local);
 
@@ -1742,6 +2093,7 @@ var app = (function () {
     			transition_out(if_block0);
     			transition_out(if_block1);
     			transition_out(if_block2);
+    			transition_out(if_block3);
     			transition_out(post0.$$.fragment, local);
     			transition_out(post1.$$.fragment, local);
     			transition_out(header.$$.fragment, local);
@@ -1765,6 +2117,12 @@ var app = (function () {
 
     			if (detaching) {
     				detach(t2);
+    			}
+
+    			if (if_block3) if_block3.d(detaching);
+
+    			if (detaching) {
+    				detach(t3);
     				detach(div3);
     			}
 
@@ -1773,26 +2131,17 @@ var app = (function () {
     			destroy_component(post1, );
 
     			destroy_component(header, );
-
-    			if (detaching) {
-    				detach(t5);
-    			}
-
-    			detach(script);
     		}
     	};
     }
 
-    function instance$5($$self, $$props, $$invalidate) {
+    function instance$6($$self, $$props, $$invalidate) {
     	
 
       let showUppload = false;
       let showLoggin = false;
       let showAddAcount = false;
-
-
-      //user profile
-
+      let showUPI = false; //UpploadProfileImage
 
 
 
@@ -1812,19 +2161,46 @@ var app = (function () {
       var settings = () => console.log("open settings");
       var uppload = () => { const $$result = showUppload = !showUppload; $$invalidate('showUppload', showUppload); return $$result; };
       var user = () => { const $$result = showLoggin = !showLoggin; $$invalidate('showLoggin', showLoggin); return $$result; };
+      var userOut = () => {
+        //loggar ut användaren
+        window.localStorage.removeItem('loggedin');
+        $$invalidate('data', data = null);
+      };
       var openCAcount = () => {
           $$invalidate('showLoggin', showLoggin = false);
           $$invalidate('showAddAcount', showAddAcount = true);
       };
-      var LogginToAcount = (event) => {
-        var e = event.detail;
-        Loggin$1(e, (res) => {
-          console.log(res);
-        });
-        alert('data: ' + e.Username + ",  " + e.Password);
+      var ProfileImageUppload = () => {
+        $$invalidate('showUPI', showUPI = true);
       };
 
-    	function submit_handler(e) {
+      var data = JSON.parse(window.localStorage.getItem('loggedin'));
+
+    	function uppload_handler(file) {
+    	      Uppload$1(file.detail.file, (res) => {
+    	        showUPI = false; $$invalidate('showUPI', showUPI);
+    	        data.Usericon = res.url; $$invalidate('data', data);
+
+    	        //update local storage
+    	        var temp = JSON.parse(window.localStorage.getItem('loggedin'));
+    	        temp.Usericon = res.url; $$invalidate('temp', temp);
+    	        window.localStorage.setItem('loggedin', JSON.stringify(temp));
+    	        
+    	        console.log('res :: ', res);
+    	      });
+    	    }
+
+    	function submit_handler(event) {
+    	        Loggin$1(event, (res) => {
+    	          if(res.command == "okey") {
+    	            window.localStorage.setItem('loggedin', JSON.stringify(res.data));
+    	            data = res.data; $$invalidate('data', data);
+    	            showLoggin = false; $$invalidate('showLoggin', showLoggin);
+    	          }
+    	        });
+    	      }
+
+    	function submit_handler_1(e) {
     	      CreateNewAcount(e, (res) => {
     	        console.log(res);
     	        if(res.res == 1) {
@@ -1838,21 +2214,28 @@ var app = (function () {
     		showUppload,
     		showLoggin,
     		showAddAcount,
+    		showUPI,
     		p,
     		settings,
     		uppload,
     		user,
+    		userOut,
     		openCAcount,
-    		LogginToAcount,
+    		ProfileImageUppload,
+    		data,
     		console,
-    		submit_handler
+    		window,
+    		JSON,
+    		uppload_handler,
+    		submit_handler,
+    		submit_handler_1
     	};
     }
 
     class App extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$5, create_fragment$5, safe_not_equal, []);
+    		init(this, options, instance$6, create_fragment$6, safe_not_equal, []);
     	}
     }
 

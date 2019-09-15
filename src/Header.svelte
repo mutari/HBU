@@ -5,11 +5,17 @@
 
     var settingsEvent = () => dispatch('openSettings');
     var upploadEvent = () => dispatch('openUppload');
-    var userEvent = () => dispatch('openUser');
+    var userEvent = () => {
+        if(loggedIn) dispatch('loggOut');
+        else dispatch('loggIn');
+    };
+    var imageEvent = () => dispatch('upploadProfileImage');
 
-    export var loggedIn = false;
-    export var name = "";
-    export var image = "";
+    export var user;
+
+    var loggedIn;
+
+    $: loggedIn = user != null;
 
 </script>
 
@@ -32,7 +38,35 @@
     }
 
     .profileDisplay {
-        border: solid 1px black;
+        display: flex;
+        margin: 10px 0 10px 0;
+    }
+
+    .image {
+        display: flex;
+        flex: 1;
+        justify-content: center;
+        align-content: center;
+        max-width: 32px; min-width: 32px;
+        max-height: 32px; min-height: 32px;
+        position: relative;
+    }
+
+    img, #imgtag {
+        padding: 0;
+        margin: 0;
+        border: solid 1px gray;
+        border-radius: 50%;
+        max-width: 32px; min-width: 32px;
+        max-height: 32px; min-height: 32px;
+    }
+
+    p {
+        padding: 5px;
+        display: flex;
+        flex: 5;
+        width: 70%;
+        align-content: center;
     }
 
 </style>
@@ -40,11 +74,17 @@
 <div class="header">
 
     <h1 class="title">HBU</h1>
-    
+
     {#if loggedIn}
         <div class="profileDisplay">
-            <img src="{image}" alt="">
-            <p>{name}</p>
+            <div class="image" >
+                {#if user.Usericon != null}
+                    <img src="{user.Usericon}" alt="">
+                {:else}
+                    <p id="imgtag" on:click={imageEvent}>add</p>
+                {/if}
+            </div>
+            <p>{user.Username}</p>
         </div>
     {/if}
 
